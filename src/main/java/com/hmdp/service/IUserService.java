@@ -13,4 +13,5 @@ import com.hmdp.entity.User;
  */
 public interface IUserService extends IService<User> {
 
+    User createUserwithPhone(String phone);
 }
