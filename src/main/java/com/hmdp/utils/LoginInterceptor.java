@@ -17,23 +17,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //1.获取session
-        HttpSession session = request.getSession();
-        //2.获取session域中的用户
-        Object user = session.getAttribute("user");
-        //3.如果用户为空，则拦截
-        if(user == null){
+        // 1.判断是否需要拦截（ThreadLocal中是否有用户）
+        if (UserHolder.getUser() == null) {
+            // 没有，需要拦截，设置状态码
             response.setStatus(401);
+            // 拦截
             return false;
         }
-        //4.如果用户处于登录状态，则保存到ThreadLocal中
-        UserHolder.saveUser((UserDTO) user);
-        //5.放行
+        // 有用户，则放行
         return true;
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        UserHolder.removeUser();
     }
 }
